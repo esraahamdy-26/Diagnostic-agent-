@@ -1,0 +1,54 @@
+{
+  "model_name": "hypertension_risk_screening",
+  "reframing_note": "Pre-lab risk screening: predicts likelihood of an abnormal lab result BEFORE the lab test is done, using only information a patient can report in conversation (no lab values used as input).",
+  "excluded_circular_features": [
+    "systolic_bp",
+    "diastolic_bp"
+  ],
+  "features_order": [
+    "age",
+    "bmi",
+    "total_cholesterol",
+    "creatinine_mg_dl",
+    "sex"
+  ],
+  "numeric_features": [
+    "age",
+    "bmi",
+    "total_cholesterol",
+    "creatinine_mg_dl"
+  ],
+  "categorical_features": [
+    "sex"
+  ],
+  "best_candidate": "logistic_regression",
+  "candidate_validation_metrics": {
+    "logistic_regression": {
+      "recall": 0.725,
+      "roc_auc": 0.7231418918918919,
+      "macro_f1": 0.5489063317634746
+    },
+    "random_forest": {
+      "recall": 0.15,
+      "roc_auc": 0.6925032175032174,
+      "macro_f1": 0.5450806797086963
+    },
+    "gradient_boosting": {
+      "recall": 0.04375,
+      "roc_auc": 0.71682351994852,
+      "macro_f1": 0.4909767860928556
+    },
+    "hist_gradient_boosting": {
+      "recall": 0.075,
+      "roc_auc": 0.676665057915058,
+      "macro_f1": 0.5138704838104763
+    }
+  },
+  "test_recall": 0.8125,
+  "test_roc_auc": 0.7428410553410554,
+  "test_macro_f1": 0.5584844944164575,
+  "test_accuracy": 0.6061899679829242,
+  "positive_class_prevalence": 0.17085668534827864,
+  "rows_total": 6245,
+  "recommended_action": "Model output should trigger a recommendation to get the actual lab test done, never replace it."
+}

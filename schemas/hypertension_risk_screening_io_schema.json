@@ -1,0 +1,63 @@
+{
+  "model_name": "hypertension_risk_screening",
+  "task": "Pre-lab hypertension risk screening (non-circular): predicts likelihood of measured high blood pressure BEFORE a BP reading is taken, using only reportable risk factors",
+  "input": {
+    "type": "object",
+    "required": [
+      "age",
+      "bmi",
+      "total_cholesterol",
+      "creatinine_mg_dl",
+      "sex"
+    ],
+    "properties": {
+      "age": {
+        "type": "number"
+      },
+      "bmi": {
+        "type": "number"
+      },
+      "total_cholesterol": {
+        "type": "number"
+      },
+      "creatinine_mg_dl": {
+        "type": "number"
+      },
+      "sex": {
+        "type": "string",
+        "enum": [
+          "male",
+          "female"
+        ]
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "low_risk",
+          "elevated_risk"
+        ]
+      },
+      "risk_score": {
+        "type": "number"
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      }
+    }
+  }
+}

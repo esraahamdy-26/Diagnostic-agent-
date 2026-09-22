@@ -1,0 +1,99 @@
+{
+  "model_name": "cbc",
+  "task": "CBC triage from real NHANES complete blood count values",
+  "input": {
+    "type": "object",
+    "required": [
+      "age",
+      "hemoglobin_g_dl",
+      "wbc_10e3_ul",
+      "platelets_10e3_ul",
+      "rbc_10e6_ul",
+      "mcv_fl",
+      "mch_pg",
+      "neutrophils_pct",
+      "lymphocytes_pct",
+      "sex"
+    ],
+    "properties": {
+      "age": {
+        "type": "number",
+        "nullable": true
+      },
+      "hemoglobin_g_dl": {
+        "type": "number",
+        "nullable": true
+      },
+      "wbc_10e3_ul": {
+        "type": "number",
+        "nullable": true
+      },
+      "platelets_10e3_ul": {
+        "type": "number",
+        "nullable": true
+      },
+      "rbc_10e6_ul": {
+        "type": "number",
+        "nullable": true
+      },
+      "mcv_fl": {
+        "type": "number",
+        "nullable": true
+      },
+      "mch_pg": {
+        "type": "number",
+        "nullable": true
+      },
+      "neutrophils_pct": {
+        "type": "number",
+        "nullable": true
+      },
+      "lymphocytes_pct": {
+        "type": "number",
+        "nullable": true
+      },
+      "sex": {
+        "type": "string",
+        "enum": [
+          "female",
+          "male"
+        ],
+        "nullable": true
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "follow_up",
+          "urgent_review",
+          "within_reference"
+        ]
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions",
+          "recommend_doctor_booking"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      },
+      "triggered_rules": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "engine": "rule_based (src/lab_triage_rules.py) \u2014 replaces the old ML model"
+}

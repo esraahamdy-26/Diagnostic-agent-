@@ -1,0 +1,93 @@
+{
+  "model_name": "pathology",
+  "task": "Pathology/lab-panel triage from real NHANES chemistry values",
+  "input": {
+    "type": "object",
+    "required": [
+      "age",
+      "bmi",
+      "fasting_glucose",
+      "hba1c",
+      "total_cholesterol",
+      "creatinine_mg_dl",
+      "alt_u_l",
+      "ast_u_l",
+      "sex"
+    ],
+    "properties": {
+      "age": {
+        "type": "number",
+        "nullable": true
+      },
+      "bmi": {
+        "type": "number",
+        "nullable": true
+      },
+      "fasting_glucose": {
+        "type": "number",
+        "nullable": true
+      },
+      "hba1c": {
+        "type": "number",
+        "nullable": true
+      },
+      "total_cholesterol": {
+        "type": "number",
+        "nullable": true
+      },
+      "creatinine_mg_dl": {
+        "type": "number",
+        "nullable": true
+      },
+      "alt_u_l": {
+        "type": "number",
+        "nullable": true
+      },
+      "ast_u_l": {
+        "type": "number",
+        "nullable": true
+      },
+      "sex": {
+        "type": "string",
+        "enum": [
+          "female",
+          "male"
+        ],
+        "nullable": true
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "follow_up",
+          "urgent_review",
+          "within_reference"
+        ]
+      },
+      "probabilities": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions",
+          "recommend_doctor_booking"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      }
+    }
+  }
+}

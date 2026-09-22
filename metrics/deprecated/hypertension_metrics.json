@@ -1,0 +1,92 @@
+{
+  "model": "hypertension",
+  "task": "Hypertension risk from real NHANES blood-pressure data",
+  "dataset": "real",
+  "label_source": "derived label from real clinical measurements/report text",
+  "selection_metric": "highest validation recall for high",
+  "best_candidate": "random_forest",
+  "candidate_validation_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.9299645390070922,
+      "macro_f1": 0.8867088325970187,
+      "positive_label": "high",
+      "positive_recall": 0.9513513513513514
+    },
+    "random_forest": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "positive_label": "high",
+      "positive_recall": 1.0
+    },
+    "gradient_boosting": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "positive_label": "high",
+      "positive_recall": 1.0
+    },
+    "hist_gradient_boosting": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "positive_label": "high",
+      "positive_recall": 1.0
+    },
+    "rbf_svm": {
+      "accuracy": 0.9627659574468085,
+      "macro_f1": 0.9371657754010696,
+      "positive_label": "high",
+      "positive_recall": 0.9891891891891892
+    }
+  },
+  "train_rows": 5261,
+  "validation_rows": 1128,
+  "test_rows": 1128,
+  "test_accuracy": 1.0,
+  "test_macro_f1": 1.0,
+  "test_positive_label": "high",
+  "test_positive_recall": 1.0,
+  "test_confusion_matrix_labels": [
+    "high",
+    "low"
+  ],
+  "test_confusion_matrix": [
+    [
+      186,
+      0
+    ],
+    [
+      0,
+      942
+    ]
+  ],
+  "test_classification_report": {
+    "high": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 186.0
+    },
+    "low": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 942.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1128.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1128.0
+    }
+  },
+  "class_distribution": {
+    "low": 6282,
+    "high": 1235
+  }
+}

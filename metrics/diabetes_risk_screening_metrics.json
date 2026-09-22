@@ -1,0 +1,56 @@
+{
+  "model_name": "diabetes_risk_screening",
+  "reframing_note": "Pre-lab risk screening: predicts likelihood of an abnormal lab result BEFORE the lab test is done, using only information a patient can report in conversation (no lab values used as input).",
+  "excluded_circular_features": [
+    "fasting_glucose",
+    "hba1c"
+  ],
+  "features_order": [
+    "age",
+    "bmi",
+    "systolic_bp",
+    "diastolic_bp",
+    "total_cholesterol",
+    "sex"
+  ],
+  "numeric_features": [
+    "age",
+    "bmi",
+    "systolic_bp",
+    "diastolic_bp",
+    "total_cholesterol"
+  ],
+  "categorical_features": [
+    "sex"
+  ],
+  "best_candidate": "logistic_regression",
+  "candidate_validation_metrics": {
+    "logistic_regression": {
+      "recall": 0.7456140350877193,
+      "roc_auc": 0.7908780070826718,
+      "macro_f1": 0.5820128479657387
+    },
+    "random_forest": {
+      "recall": 0.3508771929824561,
+      "roc_auc": 0.8082285179305573,
+      "macro_f1": 0.6495530592024449
+    },
+    "gradient_boosting": {
+      "recall": 0.14035087719298245,
+      "roc_auc": 0.8049161476777791,
+      "macro_f1": 0.5769875817362956
+    },
+    "hist_gradient_boosting": {
+      "recall": 0.20175438596491227,
+      "roc_auc": 0.7783306875076322,
+      "macro_f1": 0.6005017495213574
+    }
+  },
+  "test_recall": 0.7105263157894737,
+  "test_roc_auc": 0.7578418816450164,
+  "test_macro_f1": 0.5670217754294471,
+  "test_accuracy": 0.6827021494370522,
+  "positive_class_prevalence": 0.11658986175115207,
+  "rows_total": 6510,
+  "recommended_action": "Model output should trigger a recommendation to get the actual lab test done, never replace it."
+}

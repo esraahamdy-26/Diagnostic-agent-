@@ -1,0 +1,107 @@
+{
+  "model": "pathology",
+  "task": "Pathology/lab-panel triage from real NHANES chemistry values",
+  "dataset": "real",
+  "label_source": "derived label from real clinical measurements/report text",
+  "selection_metric": "highest validation recall for urgent_review",
+  "best_candidate": "rbf_svm",
+  "candidate_validation_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.8249027237354085,
+      "macro_f1": 0.7729006571483614,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.8571428571428571
+    },
+    "random_forest": {
+      "accuracy": 0.9883268482490273,
+      "macro_f1": 0.9652282024544799,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.8571428571428571
+    },
+    "gradient_boosting": {
+      "accuracy": 0.9941634241245136,
+      "macro_f1": 0.9563099630996309,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.7857142857142857
+    },
+    "hist_gradient_boosting": {
+      "accuracy": 0.9844357976653697,
+      "macro_f1": 0.8570048309178744,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.42857142857142855
+    },
+    "rbf_svm": {
+      "accuracy": 0.9280155642023347,
+      "macro_f1": 0.9394757289494132,
+      "positive_label": "urgent_review",
+      "positive_recall": 1.0
+    }
+  },
+  "train_rows": 2398,
+  "validation_rows": 514,
+  "test_rows": 514,
+  "test_accuracy": 0.933852140077821,
+  "test_macro_f1": 0.8701717482956449,
+  "test_positive_label": "urgent_review",
+  "test_positive_recall": 0.6666666666666666,
+  "test_confusion_matrix_labels": [
+    "follow_up",
+    "urgent_review",
+    "within_reference"
+  ],
+  "test_confusion_matrix": [
+    [
+      125,
+      1,
+      8
+    ],
+    [
+      5,
+      10,
+      0
+    ],
+    [
+      20,
+      0,
+      345
+    ]
+  ],
+  "test_classification_report": {
+    "follow_up": {
+      "precision": 0.8333333333333334,
+      "recall": 0.9328358208955224,
+      "f1-score": 0.8802816901408451,
+      "support": 134.0
+    },
+    "urgent_review": {
+      "precision": 0.9090909090909091,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.7692307692307693,
+      "support": 15.0
+    },
+    "within_reference": {
+      "precision": 0.9773371104815864,
+      "recall": 0.9452054794520548,
+      "f1-score": 0.9610027855153204,
+      "support": 365.0
+    },
+    "accuracy": 0.933852140077821,
+    "macro avg": {
+      "precision": 0.9065871176352763,
+      "recall": 0.8482359890047478,
+      "f1-score": 0.8701717482956449,
+      "support": 514.0
+    },
+    "weighted avg": {
+      "precision": 0.9378036490832867,
+      "recall": 0.933852140077821,
+      "f1-score": 0.9343623049230092,
+      "support": 514.0
+    }
+  },
+  "class_distribution": {
+    "within_reference": 2436,
+    "follow_up": 893,
+    "urgent_review": 97
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "model_name": "diabetes",
+  "task": "Diabetes risk from real NHANES glucose/HbA1c data",
+  "input": {
+    "type": "object",
+    "required": [
+      "age",
+      "bmi",
+      "fasting_glucose",
+      "hba1c",
+      "systolic_bp",
+      "total_cholesterol",
+      "sex"
+    ],
+    "properties": {
+      "age": {
+        "type": "number",
+        "nullable": true
+      },
+      "bmi": {
+        "type": "number",
+        "nullable": true
+      },
+      "fasting_glucose": {
+        "type": "number",
+        "nullable": true
+      },
+      "hba1c": {
+        "type": "number",
+        "nullable": true
+      },
+      "systolic_bp": {
+        "type": "number",
+        "nullable": true
+      },
+      "total_cholesterol": {
+        "type": "number",
+        "nullable": true
+      },
+      "sex": {
+        "type": "string",
+        "enum": [
+          "female",
+          "male"
+        ],
+        "nullable": true
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low"
+        ]
+      },
+      "probabilities": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions",
+          "recommend_doctor_booking"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      }
+    }
+  }
+}

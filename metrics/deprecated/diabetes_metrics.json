@@ -1,0 +1,92 @@
+{
+  "model": "diabetes",
+  "task": "Diabetes risk from real NHANES glucose/HbA1c data",
+  "dataset": "real",
+  "label_source": "derived label from real clinical measurements/report text",
+  "selection_metric": "highest validation recall for high",
+  "best_candidate": "gradient_boosting",
+  "candidate_validation_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.9454545454545454,
+      "macro_f1": 0.8994613566014282,
+      "positive_label": "high",
+      "positive_recall": 0.9367088607594937
+    },
+    "random_forest": {
+      "accuracy": 0.9963636363636363,
+      "macro_f1": 0.9926861702127661,
+      "positive_label": "high",
+      "positive_recall": 1.0
+    },
+    "gradient_boosting": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "positive_label": "high",
+      "positive_recall": 1.0
+    },
+    "hist_gradient_boosting": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "positive_label": "high",
+      "positive_recall": 1.0
+    },
+    "rbf_svm": {
+      "accuracy": 0.9563636363636364,
+      "macro_f1": 0.9180755194756833,
+      "positive_label": "high",
+      "positive_recall": 0.9493670886075949
+    }
+  },
+  "train_rows": 2569,
+  "validation_rows": 550,
+  "test_rows": 551,
+  "test_accuracy": 1.0,
+  "test_macro_f1": 1.0,
+  "test_positive_label": "high",
+  "test_positive_recall": 1.0,
+  "test_confusion_matrix_labels": [
+    "high",
+    "low"
+  ],
+  "test_confusion_matrix": [
+    [
+      79,
+      0
+    ],
+    [
+      0,
+      472
+    ]
+  ],
+  "test_classification_report": {
+    "high": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 79.0
+    },
+    "low": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 472.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 551.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 551.0
+    }
+  },
+  "class_distribution": {
+    "low": 3145,
+    "high": 525
+  }
+}

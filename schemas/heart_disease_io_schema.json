@@ -1,0 +1,141 @@
+{
+  "model_name": "heart_disease",
+  "task": "Heart disease risk from real UCI Cleveland heart disease data",
+  "input": {
+    "type": "object",
+    "required": [
+      "age",
+      "trestbps",
+      "chol",
+      "thalach",
+      "oldpeak",
+      "ca",
+      "sex",
+      "cp",
+      "fbs",
+      "restecg",
+      "exang",
+      "slope",
+      "thal"
+    ],
+    "properties": {
+      "age": {
+        "type": "number",
+        "nullable": true
+      },
+      "trestbps": {
+        "type": "number",
+        "nullable": true
+      },
+      "chol": {
+        "type": "number",
+        "nullable": true
+      },
+      "thalach": {
+        "type": "number",
+        "nullable": true
+      },
+      "oldpeak": {
+        "type": "number",
+        "nullable": true
+      },
+      "ca": {
+        "type": "number",
+        "nullable": true
+      },
+      "sex": {
+        "type": "string",
+        "enum": [
+          "0.0",
+          "1.0"
+        ],
+        "nullable": true
+      },
+      "cp": {
+        "type": "string",
+        "enum": [
+          "1.0",
+          "2.0",
+          "3.0",
+          "4.0"
+        ],
+        "nullable": true
+      },
+      "fbs": {
+        "type": "string",
+        "enum": [
+          "0.0",
+          "1.0"
+        ],
+        "nullable": true
+      },
+      "restecg": {
+        "type": "string",
+        "enum": [
+          "0.0",
+          "1.0",
+          "2.0"
+        ],
+        "nullable": true
+      },
+      "exang": {
+        "type": "string",
+        "enum": [
+          "0.0",
+          "1.0"
+        ],
+        "nullable": true
+      },
+      "slope": {
+        "type": "string",
+        "enum": [
+          "1.0",
+          "2.0",
+          "3.0"
+        ],
+        "nullable": true
+      },
+      "thal": {
+        "type": "string",
+        "enum": [
+          "3.0",
+          "6.0",
+          "7.0"
+        ],
+        "nullable": true
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low"
+        ]
+      },
+      "probabilities": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions",
+          "recommend_doctor_booking"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      }
+    }
+  }
+}

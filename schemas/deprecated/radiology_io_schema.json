@@ -1,0 +1,49 @@
+{
+  "model_name": "radiology",
+  "task": "Radiology report urgency from real IU-Xray/Open-i report text",
+  "input": {
+    "type": "object",
+    "required": [
+      "report_text"
+    ],
+    "properties": {
+      "report_text": {
+        "type": "string",
+        "minLength": 10
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "follow_up",
+          "routine",
+          "urgent_review"
+        ]
+      },
+      "probabilities": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions",
+          "recommend_doctor_booking"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "cbc": {
+    "age": 34,
+    "sex": "female",
+    "hemoglobin_g_dl": 10.2,
+    "wbc_10e3_ul": 13.4,
+    "platelets_10e3_ul": 210,
+    "rbc_10e6_ul": 4.1,
+    "mcv_fl": 74,
+    "mch_pg": 25,
+    "neutrophils_pct": 82,
+    "lymphocytes_pct": 12
+  },
+  "pathology": {
+    "age": 52,
+    "sex": "male",
+    "bmi": 30.1,
+    "fasting_glucose": 146,
+    "hba1c": 7.2,
+    "total_cholesterol": 252,
+    "creatinine_mg_dl": 1.1,
+    "alt_u_l": 72,
+    "ast_u_l": 48
+  },
+  "radiology": {
+    "report_text": "There is a right apical pneumothorax. No pleural effusion."
+  },
+  "heart_disease": {
+    "age": 61,
+    "sex": "1.0",
+    "cp": "4.0",
+    "trestbps": 152,
+    "chol": 248,
+    "fbs": "0.0",
+    "restecg": "2.0",
+    "thalach": 108,
+    "exang": "1.0",
+    "oldpeak": 2.1,
+    "slope": "2.0",
+    "ca": 1,
+    "thal": "7.0"
+  },
+  "diabetes_risk_screening": {
+    "age": 55,
+    "bmi": 31.0,
+    "systolic_bp": 145,
+    "diastolic_bp": 90,
+    "total_cholesterol": 230,
+    "sex": "male"
+  },
+  "hypertension_risk_screening": {
+    "age": 58,
+    "bmi": 31.2,
+    "total_cholesterol": 220,
+    "creatinine_mg_dl": 1.0,
+    "sex": "male"
+  }
+}

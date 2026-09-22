@@ -1,0 +1,77 @@
+{
+  "model_name": "hypertension",
+  "task": "Hypertension risk from real NHANES blood-pressure data",
+  "input": {
+    "type": "object",
+    "required": [
+      "age",
+      "bmi",
+      "systolic_bp",
+      "diastolic_bp",
+      "creatinine_mg_dl",
+      "sex"
+    ],
+    "properties": {
+      "age": {
+        "type": "number",
+        "nullable": true
+      },
+      "bmi": {
+        "type": "number",
+        "nullable": true
+      },
+      "systolic_bp": {
+        "type": "number",
+        "nullable": true
+      },
+      "diastolic_bp": {
+        "type": "number",
+        "nullable": true
+      },
+      "creatinine_mg_dl": {
+        "type": "number",
+        "nullable": true
+      },
+      "sex": {
+        "type": "string",
+        "enum": [
+          "female",
+          "male"
+        ],
+        "nullable": true
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "prediction": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low"
+        ]
+      },
+      "probabilities": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "triage_action": {
+        "type": "string",
+        "enum": [
+          "reassure_and_explain",
+          "ask_follow_up_questions",
+          "recommend_doctor_booking"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "safety_disclaimer": {
+        "type": "string"
+      }
+    }
+  }
+}

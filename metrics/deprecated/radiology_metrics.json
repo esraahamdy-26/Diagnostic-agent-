@@ -1,0 +1,95 @@
+{
+  "model": "radiology",
+  "task": "Radiology report urgency from real IU-Xray/Open-i report text",
+  "dataset": "real",
+  "label_source": "derived label from real clinical measurements/report text",
+  "selection_metric": "highest validation recall for urgent_review",
+  "best_candidate": "tfidf_random_forest",
+  "candidate_validation_metrics": {
+    "tfidf_logistic_regression": {
+      "accuracy": 0.927765237020316,
+      "macro_f1": 0.9203936984087425,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.9405405405405406
+    },
+    "tfidf_linear_svm": {
+      "accuracy": 0.945823927765237,
+      "macro_f1": 0.9359641482084541,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.9513513513513514
+    },
+    "tfidf_random_forest": {
+      "accuracy": 0.9525959367945824,
+      "macro_f1": 0.9429481687727564,
+      "positive_label": "urgent_review",
+      "positive_recall": 0.9621621621621622
+    }
+  },
+  "train_rows": 2068,
+  "validation_rows": 443,
+  "test_rows": 444,
+  "test_accuracy": 0.9324324324324325,
+  "test_macro_f1": 0.9207914750223424,
+  "test_positive_label": "urgent_review",
+  "test_positive_recall": 0.9297297297297298,
+  "test_confusion_matrix_labels": [
+    "follow_up",
+    "routine",
+    "urgent_review"
+  ],
+  "test_confusion_matrix": [
+    [
+      188,
+      12,
+      2
+    ],
+    [
+      3,
+      54,
+      0
+    ],
+    [
+      13,
+      0,
+      172
+    ]
+  ],
+  "test_classification_report": {
+    "follow_up": {
+      "precision": 0.9215686274509803,
+      "recall": 0.9306930693069307,
+      "f1-score": 0.9261083743842364,
+      "support": 202.0
+    },
+    "routine": {
+      "precision": 0.8181818181818182,
+      "recall": 0.9473684210526315,
+      "f1-score": 0.8780487804878049,
+      "support": 57.0
+    },
+    "urgent_review": {
+      "precision": 0.9885057471264368,
+      "recall": 0.9297297297297298,
+      "f1-score": 0.958217270194986,
+      "support": 185.0
+    },
+    "accuracy": 0.9324324324324325,
+    "macro avg": {
+      "precision": 0.9094187309197451,
+      "recall": 0.9359304066964307,
+      "f1-score": 0.9207914750223424,
+      "support": 444.0
+    },
+    "weighted avg": {
+      "precision": 0.9361864630627309,
+      "recall": 0.9324324324324325,
+      "f1-score": 0.9333172682421015,
+      "support": 444.0
+    }
+  },
+  "class_distribution": {
+    "follow_up": 1347,
+    "urgent_review": 1233,
+    "routine": 375
+  }
+}

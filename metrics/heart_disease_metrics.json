@@ -1,0 +1,92 @@
+{
+  "model": "heart_disease",
+  "task": "Heart disease risk from real UCI Cleveland heart disease data",
+  "dataset": "real",
+  "label_source": "original dataset target",
+  "selection_metric": "highest validation recall for high",
+  "best_candidate": "rbf_svm",
+  "candidate_validation_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.7333333333333333,
+      "macro_f1": 0.73,
+      "positive_label": "high",
+      "positive_recall": 0.6666666666666666
+    },
+    "random_forest": {
+      "accuracy": 0.7333333333333333,
+      "macro_f1": 0.7267206477732794,
+      "positive_label": "high",
+      "positive_recall": 0.6190476190476191
+    },
+    "gradient_boosting": {
+      "accuracy": 0.6888888888888889,
+      "macro_f1": 0.685,
+      "positive_label": "high",
+      "positive_recall": 0.6190476190476191
+    },
+    "hist_gradient_boosting": {
+      "accuracy": 0.7333333333333333,
+      "macro_f1": 0.73,
+      "positive_label": "high",
+      "positive_recall": 0.6666666666666666
+    },
+    "rbf_svm": {
+      "accuracy": 0.7555555555555555,
+      "macro_f1": 0.751131221719457,
+      "positive_label": "high",
+      "positive_recall": 0.6666666666666666
+    }
+  },
+  "train_rows": 212,
+  "validation_rows": 45,
+  "test_rows": 46,
+  "test_accuracy": 0.8260869565217391,
+  "test_macro_f1": 0.8247619047619048,
+  "test_positive_label": "high",
+  "test_positive_recall": 0.8095238095238095,
+  "test_confusion_matrix_labels": [
+    "high",
+    "low"
+  ],
+  "test_confusion_matrix": [
+    [
+      17,
+      4
+    ],
+    [
+      4,
+      21
+    ]
+  ],
+  "test_classification_report": {
+    "high": {
+      "precision": 0.8095238095238095,
+      "recall": 0.8095238095238095,
+      "f1-score": 0.8095238095238095,
+      "support": 21.0
+    },
+    "low": {
+      "precision": 0.84,
+      "recall": 0.84,
+      "f1-score": 0.84,
+      "support": 25.0
+    },
+    "accuracy": 0.8260869565217391,
+    "macro avg": {
+      "precision": 0.8247619047619048,
+      "recall": 0.8247619047619048,
+      "f1-score": 0.8247619047619048,
+      "support": 46.0
+    },
+    "weighted avg": {
+      "precision": 0.8260869565217391,
+      "recall": 0.8260869565217391,
+      "f1-score": 0.8260869565217391,
+      "support": 46.0
+    }
+  },
+  "class_distribution": {
+    "low": 164,
+    "high": 139
+  }
+}
