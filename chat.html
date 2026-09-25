@@ -2,24 +2,51 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnostic Agent - محادثة حرة</title>
 <style>
-  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; margin: 0; display: flex; justify-content: center; }
-  .app { width: 480px; max-width: 100%; height: 100vh; display: flex; flex-direction: column; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-  header { background: #1a7a5e; color: white; padding: 14px 16px; font-size: 15px; }
-  #chat { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-  .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; line-height: 1.6; font-size: 15px; white-space: pre-wrap; }
-  .agent { background: #e9ecef; align-self: flex-start; border-bottom-left-radius: 2px; }
-  .user { background: #1a7a5e; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-  .critical { background: #d32f2f !important; color: white !important; }
-  .doctor { background: #f0a020 !important; }
-  .recommendation { background: #2e7d32 !important; color: white !important; }
-  .domain-chip { background: white; border: 1px solid #1a7a5e; color: #1a7a5e; padding: 6px 12px; border-radius: 14px; cursor: pointer; font-size: 13px; margin: 4px; }
-  #domainChips { display: none; flex-wrap: wrap; padding: 0 16px 8px; }
-  #inputArea { display: flex; padding: 12px; border-top: 1px solid #ddd; gap: 8px; }
-  #inputArea input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #ccc; font-size: 15px; }
-  #inputArea button { background: #1a7a5e; color: white; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; }
-  #inputArea button:disabled { background: #aaa; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background:#f0f2f5; margin:0; display:flex; justify-content:center; }
+  .app { width:480px; max-width:100%; height:100vh; display:flex; flex-direction:column; background:#fff; box-shadow:0 0 20px rgba(0,0,0,.1); }
+  header { background:#1a7a5e; color:#fff; padding:14px 16px; font-size:15px; }
+  #chat { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .msg { max-width:86%; padding:10px 14px; border-radius:14px; line-height:1.6; font-size:15px; white-space:pre-wrap; word-break:break-word; }
+  .agent { background:#e9ecef; align-self:flex-start; border-bottom-left-radius:2px; color:#222; }
+  .user { background:#1a7a5e; color:white; align-self:flex-end; border-bottom-right-radius:2px; }
+  .critical { background:#d32f2f !important; color:white !important; }
+  .doctor { background:#f0a020 !important; color:white !important; }
+  .recommendation { background:#2e7d32 !important; color:white !important; }
+  .domain-chip { background:white; border:1px solid #1a7a5e; color:#1a7a5e; padding:6px 12px; border-radius:14px; cursor:pointer; font-size:13px; margin:4px; }
+  #domainChips { display:none; flex-wrap:wrap; padding:0 16px 8px; }
+
+  /* Composer: attachment preview stays ABOVE the text box, so the user can
+     attach a picture/PDF first and then type the question underneath it. */
+  #composer { border-top:1px solid #ddd; padding:8px 12px 12px; background:#fff; }
+  #attachmentPreview { display:none; margin-bottom:8px; }
+  .attachment-card { position:relative; display:flex; align-items:center; gap:9px; border:1px solid #d9d9d9; border-radius:12px; padding:8px; background:#f7f7f7; max-width:100%; }
+  .attachment-thumb { width:62px; height:62px; border-radius:9px; object-fit:cover; background:#e9ecef; flex:none; }
+  .file-icon { width:62px; height:62px; border-radius:9px; background:#e9ecef; display:flex; align-items:center; justify-content:center; font-size:27px; flex:none; }
+  .attachment-info { min-width:0; flex:1; }
+  .attachment-name { font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .attachment-hint { font-size:12px; color:#666; margin-top:3px; }
+  .remove-file { position:absolute; left:6px; top:6px; border:0; width:25px; height:25px; border-radius:50%; background:#333; color:white; cursor:pointer; line-height:25px; padding:0; }
+
+  #inputArea { display:flex; gap:8px; align-items:center; }
+  #textInput { flex:1; min-width:0; padding:11px 14px; border-radius:20px; border:1px solid #ccc; font-size:15px; outline:none; }
+  #textInput:focus { border-color:#1a7a5e; }
+  #fileLabel { background:#e9ecef; border-radius:50%; width:42px; height:42px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:19px; flex:none; }
+  #sendBtn { background:#1a7a5e; color:white; border:none; padding:10px 18px; border-radius:20px; cursor:pointer; flex:none; }
+  #sendBtn:disabled { background:#aaa; cursor:not-allowed; }
+
+  .chat-attachment { margin-bottom:7px; }
+  .chat-attachment img { max-width:240px; max-height:240px; border-radius:10px; display:block; }
+  .chat-file { background:rgba(255,255,255,.16); border-radius:9px; padding:8px 10px; font-size:13px; }
+  .typing { opacity:.7; font-style:italic; }
+  .request-status { align-self:flex-start; max-width:88%; background:#f4f6f5; color:#4f5b56; border:1px solid #dfe5e2; border-radius:14px; padding:9px 12px; font-size:13px; line-height:1.5; display:flex; align-items:center; gap:8px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .request-status .spinner { width:15px; height:15px; border:2px solid #cbd5d1; border-top-color:#1a7a5e; border-radius:50%; animation:spin .8s linear infinite; flex:none; }
+  .request-status.error { background:#fff5f5; border-color:#f1c6c6; color:#a12a2a; }
+  .request-status.success { background:#f2faf5; border-color:#cce7d5; color:#236b3b; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -27,30 +54,73 @@
   <header>🩺 Diagnostic Agent — اكتبي بحرية زي أي شات عادي</header>
   <div id="chat"></div>
   <div id="domainChips"></div>
-  <div id="inputArea">
-    <label for="fileInput" style="background:#e9ecef;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;">📎
-      <input type="file" id="fileInput" accept="image/*,.pdf" style="display:none" onchange="uploadFile()">
-    </label>
-    <input id="textInput" placeholder="اكتبي اللي حاسة بيه..." onkeydown="if(event.key==='Enter') send()">
-    <button id="sendBtn" onclick="send()">إرسال</button>
+
+  <div id="composer">
+    <div id="attachmentPreview">
+      <div class="attachment-card">
+        <div id="previewVisual"></div>
+        <div class="attachment-info">
+          <div id="attachmentName" class="attachment-name"></div>
+          <div class="attachment-hint">اكتبي تحت الصورة/الملف سؤالك، وبعدين اضغطي إرسال</div>
+        </div>
+        <button class="remove-file" onclick="removeAttachment()" title="إزالة الملف">×</button>
+      </div>
+    </div>
+
+    <div id="inputArea">
+      <label id="fileLabel" for="fileInput" title="إرفاق صورة أو ملف">📎
+        <input type="file" id="fileInput" accept="image/*,.pdf,.txt,.csv,.json,.docx" style="display:none" onchange="selectFile(event)">
+      </label>
+      <input id="textInput" placeholder="اكتبي سؤالك عن الصورة/الملف أو اللي حاسة بيه..." onkeydown="handleKey(event)">
+      <button id="sendBtn" onclick="send()">إرسال</button>
+    </div>
   </div>
 </div>
 
 <script>
 const API_BASE = "http://127.0.0.1:8000";
 let sessionId = null;
+let pendingFile = null;
+let pendingPreviewUrl = null;
+let requestInFlight = false;
+let statusTimer = null;
+let requestStatusEl = null;
+let requestAbortController = null;
 
 const DOMAIN_LABELS = {
-  heart_disease: "القلب", cbc: "تحليل CBC", pathology: "تحاليل عامة",
-  diabetes_risk_screening: "خطر السكر", hypertension_risk_screening: "خطر الضغط",
-  radiology: "تقرير أشعة", general_wellness: "استفسار عام / نصيحة صحية"
+  heart_disease:"القلب", cbc:"تحليل CBC", pathology:"تحاليل عامة",
+  diabetes_risk_screening:"خطر السكر", hypertension_risk_screening:"خطر الضغط",
+  radiology:"تقرير أشعة", general_wellness:"استفسار عام / نصيحة صحية"
 };
 
-function addMsg(text, who, tone) {
+function addMsg(text, who, tone, attachment=null) {
   const chat = document.getElementById("chat");
   const div = document.createElement("div");
   div.className = "msg " + who + (tone ? " " + tone : "");
-  div.innerText = text;
+
+  if (attachment) {
+    const wrap = document.createElement("div");
+    wrap.className = "chat-attachment";
+    if (attachment.type && attachment.type.startsWith("image/") && attachment.url) {
+      const img = document.createElement("img");
+      img.src = attachment.url;
+      img.alt = attachment.name || "attachment";
+      wrap.appendChild(img);
+    } else {
+      const file = document.createElement("div");
+      file.className = "chat-file";
+      file.textContent = "📄 " + (attachment.name || "ملف مرفق");
+      wrap.appendChild(file);
+    }
+    div.appendChild(wrap);
+  }
+
+  if (text) {
+    const textNode = document.createElement("div");
+    textNode.innerText = text;
+    div.appendChild(textNode);
+  }
+
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -74,36 +144,156 @@ function showDomainChips(options) {
     box.appendChild(chip);
   });
 }
+function hideDomainChips() { document.getElementById("domainChips").style.display = "none"; }
 
-function hideDomainChips() {
-  document.getElementById("domainChips").style.display = "none";
+function handleKey(event) {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    send();
+  }
+}
+
+function selectFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  removeAttachment(false);
+  pendingFile = file;
+  pendingPreviewUrl = URL.createObjectURL(file);
+
+  document.getElementById("attachmentName").textContent = file.name;
+  const visual = document.getElementById("previewVisual");
+  visual.innerHTML = "";
+
+  if (file.type.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.className = "attachment-thumb";
+    img.src = pendingPreviewUrl;
+    img.alt = file.name;
+    visual.appendChild(img);
+  } else {
+    const icon = document.createElement("div");
+    icon.className = "file-icon";
+    icon.textContent = file.name.toLowerCase().endsWith(".pdf") ? "📕" : "📄";
+    visual.appendChild(icon);
+  }
+
+  document.getElementById("attachmentPreview").style.display = "block";
+  document.getElementById("textInput").focus();
+}
+
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function removeAttachment(clearInput=true) {
+  if (pendingPreviewUrl) URL.revokeObjectURL(pendingPreviewUrl);
+  pendingPreviewUrl = null;
+  pendingFile = null;
+  document.getElementById("attachmentPreview").style.display = "none";
+  document.getElementById("previewVisual").innerHTML = "";
+  document.getElementById("attachmentName").textContent = "";
+  if (clearInput) document.getElementById("fileInput").value = "";
+}
+
+function showRequestStatus(message, kind="loading") {
+  removeRequestStatus();
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = "request-status" + (kind === "error" ? " error" : kind === "success" ? " success" : "");
+  div.id = "requestStatus";
+  const icon = document.createElement("span");
+  if (kind === "loading") {
+    icon.className = "spinner";
+  } else {
+    icon.textContent = kind === "success" ? "✓" : "⚠️";
+  }
+  const text = document.createElement("span");
+  text.textContent = message;
+  div.appendChild(icon);
+  div.appendChild(text);
+  chat.appendChild(div);
+  requestStatusEl = div;
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function updateRequestStatus(message) {
+  if (!requestStatusEl) {
+    showRequestStatus(message);
+    return;
+  }
+  const text = requestStatusEl.querySelector("span:last-child");
+  if (text) text.textContent = message;
+  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+}
+
+function removeRequestStatus() {
+  if (statusTimer) {
+    clearInterval(statusTimer);
+    statusTimer = null;
+  }
+  const old = document.getElementById("requestStatus");
+  if (old) old.remove();
+  requestStatusEl = null;
+}
+
+function startProgressMessages(hasAttachment) {
+  const stages = hasAttachment
+    ? ["⏳ جاري رفع الملف...", "🖼️ بقرأ الصورة/الملف...", "🔎 بحلل المعلومات المرتبطة بسؤالك...", "🤖 بجهز لك إجابة بسيطة..."]
+    : ["⏳ جاري إرسال رسالتك...", "🧠 بفهم سؤالك والسياق السابق...", "🔎 بدوّر في المعلومات المناسبة...", "🤖 بجهز لك الإجابة..."];
+  let i = 0;
+  showRequestStatus(stages[0]);
+  statusTimer = setInterval(() => {
+    i = Math.min(i + 1, stages.length - 1);
+    updateRequestStatus(stages[i]);
+  }, 1800);
+}
+
+function finishRequestStatus(ok=true, message="تم") {
+  if (statusTimer) {
+    clearInterval(statusTimer);
+    statusTimer = null;
+  }
+  if (!requestStatusEl) return;
+  requestStatusEl.classList.remove("loading");
+  requestStatusEl.classList.add(ok ? "success" : "error");
+  const icon = requestStatusEl.querySelector("span:first-child");
+  if (icon) {
+    icon.className = "";
+    icon.textContent = ok ? "✓" : "⚠️";
+  }
+  const text = requestStatusEl.querySelector("span:last-child");
+  if (text) text.textContent = message;
+  if (ok) setTimeout(removeRequestStatus, 700);
 }
 
 async function startChat() {
-  const res = await fetch(`${API_BASE}/chat/start`, {
-    method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({})
-  });
-  const data = await res.json();
-  sessionId = data.session_id;
-  addMsg(data.message, "agent", toneFromAction(data.action));
+  try {
+    const res = await fetch(`${API_BASE}/chat/start`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({}) });
+    const data = await res.json();
+    sessionId = data.session_id;
+    addMsg(data.message, "agent", toneFromAction(data.action));
+  } catch (e) {
+    addMsg("مش قادرة أوصل للـ backend. اتأكدي إن uvicorn شغال على port 8000.", "agent", "critical");
+  }
 }
 
 async function setDomain(domain) {
   hideDomainChips();
   addMsg(DOMAIN_LABELS[domain] || domain, "user");
-  const res = await fetch(`${API_BASE}/chat/${sessionId}/set_domain`, {
-    method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({domain})
-  });
+  const res = await fetch(`${API_BASE}/chat/${sessionId}/set_domain`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({domain}) });
   handleResponse(await res.json());
 }
 
 function handleResponse(data) {
   addMsg(data.message, "agent", toneFromAction(data.action));
-  if (data.action === "ask_domain" && data.data && data.data.options) {
-    showDomainChips(data.data.options);
-  } else {
-    hideDomainChips();
-  }
+  if (data.action === "ask_domain" && data.data && data.data.options) showDomainChips(data.data.options);
+  else hideDomainChips();
   if (data.action === "escalate_emergency") {
     document.getElementById("sendBtn").disabled = true;
     document.getElementById("textInput").disabled = true;
@@ -112,26 +302,73 @@ function handleResponse(data) {
 
 async function send() {
   const input = document.getElementById("textInput");
-  const text = input.value.trim();
-  if (!text || !sessionId) return;
-  input.value = "";
-  addMsg(text, "user");
-  const res = await fetch(`${API_BASE}/chat/${sessionId}/message`, {
-    method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text})
-  });
-  handleResponse(await res.json());
-}
-
-async function uploadFile() {
+  const sendBtn = document.getElementById("sendBtn");
   const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
-  if (!file || !sessionId) return;
-  addMsg("📎 " + file.name, "user");
-  const formData = new FormData();
-  formData.append("file", file);
-  const res = await fetch(`${API_BASE}/chat/${sessionId}/upload`, { method: "POST", body: formData });
-  handleResponse(await res.json());
-  fileInput.value = "";
+  const text = input.value.trim();
+  if ((!text && !pendingFile) || !sessionId || requestInFlight) return;
+
+  const fileToSend = pendingFile;
+  const displayText = text || "ممكن تقريلي الملف/الصورة دي وتفهميني محتواها؟";
+  let chatAttachment = null;
+
+  // Read the preview before clearing the composer.
+  if (fileToSend) {
+    chatAttachment = {
+      name: fileToSend.name,
+      type: fileToSend.type,
+      url: fileToSend.type.startsWith("image/") ? await fileToDataUrl(fileToSend) : null
+    };
+  }
+
+  addMsg(displayText, "user", null, chatAttachment);
+  input.value = "";
+  requestInFlight = true;
+  sendBtn.disabled = true;
+  input.disabled = true;
+  fileInput.disabled = true;
+  startProgressMessages(Boolean(fileToSend));
+
+  requestAbortController = new AbortController();
+  const timeoutId = setTimeout(() => requestAbortController.abort(), 120000);
+
+  try {
+    const formData = new FormData();
+    formData.append("text", text);
+    if (fileToSend) formData.append("file", fileToSend, fileToSend.name);
+
+    const res = await fetch(`${API_BASE}/chat/${sessionId}/message`, {
+      method: "POST",
+      body: formData,
+      signal: requestAbortController.signal
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (_) {
+      throw new Error(`الـ backend رجّع استجابة غير مفهومة (HTTP ${res.status}).`);
+    }
+
+    if (!res.ok) throw new Error(data.detail || data.message || `HTTP ${res.status}`);
+
+    finishRequestStatus(true, "تمت المعالجة ✓");
+    handleResponse(data);
+  } catch (e) {
+    const message = e.name === "AbortError"
+      ? "الطلب أخد وقت أطول من المتوقع. اتأكدي إن الـ backend وGemini شغالين، وبعدها جربي تاني."
+      : `حصلت مشكلة وأنا بعالج الرسالة${fileToSend ? "/الملف" : ""}: ${e.message}`;
+    finishRequestStatus(false, message);
+    addMsg(message, "agent", "critical");
+  } finally {
+    clearTimeout(timeoutId);
+    requestAbortController = null;
+    requestInFlight = false;
+    sendBtn.disabled = false;
+    input.disabled = false;
+    fileInput.disabled = false;
+    removeAttachment();
+    input.focus();
+  }
 }
 
 startChat();

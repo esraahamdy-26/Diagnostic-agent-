@@ -18,7 +18,7 @@ included chat.html as a simple frontend (see README).
 import uuid
 from typing import Any
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -30,7 +30,7 @@ except ImportError:
 
 from src.conversational_agent import SAFETY_FIELD_SPECS, ConversationalDiagnosticAgent
 from src.orchestrator import AgentAction, UnifiedDiagnosticAgent
-from src.vision_extraction import VisionExtractionError, extract_text_from_image
+from src.vision_extraction import VisionExtractionError, extract_attachment_content
 
 app = FastAPI(title="Diagnostic Agent API", version="1.0.0")
 
@@ -211,11 +211,68 @@ def chat_start(req: ChatStartRequest):
 
 
 @app.post("/chat/{session_id}/message", response_model=ChatResponse)
-def chat_message(session_id: str, req: ChatMessageRequest):
+async def chat_message(session_id: str, request: Request):
+    """Accept either the old JSON message or a multipart message + attachment.
+
+    Multipart is what the chat UI uses now: the patient can attach a file/image,
+    type a question about it, and send both together.
+    """
     agent = CHAT_SESSIONS.get(session_id)
     if agent is None:
         raise HTTPException(404, "Session not found. Start a new one via /chat/start.")
-    result = agent.handle_message(req.text)
+
+    content_type = (request.headers.get("content-type") or "").lower()
+    attachment_info = None
+
+    if content_type.startswith("multipart/form-data"):
+        form = await request.form()
+        text = str(form.get("text") or "").strip()
+        upload = form.get("file")
+        if upload is not None and hasattr(upload, "read"):
+            content = await upload.read()
+            try:
+                attachment_info = extract_attachment_content(
+                    content,
+                    mime_type=upload.content_type or "application/octet-stream",
+                    filename=upload.filename or "attachment",
+                    api_key=agent.api_key,
+                    provider=agent.provider,
+                )
+            except VisionExtractionError as exc:
+                return {
+                    "session_id": session_id,
+                    "action": "ask_question",
+                    "message": str(exc),
+                    "data": {"attachment_error": True},
+                }
+
+            extracted = attachment_info.get("text", "")
+            question = text or "اقرأي الملف/الصورة دي واشرحيلي ببساطة إيه اللي ظاهر فيها وإيه أهم حاجة المفروض أفهمها."
+            # Keep the actual attachment content in the conversation context so a
+            # follow-up such as "طيب وده معناه إيه؟" can refer to the same file.
+            message_for_agent = (
+                f"{question}\n\n"
+                f"[ATTACHMENT: {attachment_info.get('filename')}]\n"
+                f"[EXTRACTED ATTACHMENT CONTENT]\n{extracted[:20000]}"
+            )
+        else:
+            message_for_agent = text
+    else:
+        body = await request.json()
+        message_for_agent = str(body.get("text") or "").strip()
+
+    if not message_for_agent.strip():
+        raise HTTPException(400, "اكتبي رسالة أو ارفعي ملفاً.")
+
+    result = agent.handle_message(message_for_agent)
+    if attachment_info:
+        result.setdefault("data", {})
+        result["data"]["attachment"] = {
+            "filename": attachment_info.get("filename"),
+            "mime_type": attachment_info.get("mime_type"),
+            "kind": attachment_info.get("kind"),
+            "extracted_text_preview": attachment_info.get("text", "")[:600],
+        }
     return {"session_id": session_id, **result}
 
 
@@ -232,24 +289,34 @@ def chat_set_domain(session_id: str, req: StartSessionRequest):
 
 @app.post("/chat/{session_id}/upload", response_model=ChatResponse)
 async def chat_upload(session_id: str, file: UploadFile = File(...)):
-    """
-    بترفع صورة/سكان لتحليل أو تقرير، وبيتحوّل النص المستخرج منها لنفس مسار
-    الرسائل الحرة العادي (extract_fields على النص المستخرج).
-    """
+    """Backward-compatible upload endpoint. New UI sends attachment + text together."""
     agent = CHAT_SESSIONS.get(session_id)
     if agent is None:
         raise HTTPException(404, "Session not found. Start a new one via /chat/start.")
 
     content = await file.read()
-    mime_type = file.content_type or "image/jpeg"
-
     try:
-        extracted_text = extract_text_from_image(
-            content, mime_type=mime_type, api_key=agent.api_key, provider=agent.provider
+        attachment_info = extract_attachment_content(
+            content,
+            mime_type=file.content_type or "application/octet-stream",
+            filename=file.filename or "attachment",
+            api_key=agent.api_key,
+            provider=agent.provider,
         )
-    except VisionExtractionError as e:
-        return {"session_id": session_id, "action": "ask_question", "message": str(e), "data": {}}
+    except VisionExtractionError as exc:
+        return {"session_id": session_id, "action": "ask_question", "message": str(exc), "data": {"attachment_error": True}}
 
-    result = agent.handle_message(extracted_text)
-    result["data"]["extracted_text_preview"] = extracted_text[:300]
+    question = "اقرأي الملف/الصورة دي واشرحيلي ببساطة إيه اللي ظاهر فيها وإيه أهم حاجة المفروض أفهمها."
+    message_for_agent = (
+        f"{question}\n\n[ATTACHMENT: {attachment_info.get('filename')}]\n"
+        f"[EXTRACTED ATTACHMENT CONTENT]\n{attachment_info.get('text', '')[:20000]}"
+    )
+    result = agent.handle_message(message_for_agent)
+    result.setdefault("data", {})
+    result["data"]["attachment"] = {
+        "filename": attachment_info.get("filename"),
+        "mime_type": attachment_info.get("mime_type"),
+        "kind": attachment_info.get("kind"),
+        "extracted_text_preview": attachment_info.get("text", "")[:600],
+    }
     return {"session_id": session_id, **result}

@@ -66,12 +66,17 @@ class GeneralWellnessHandler:
                     conversation_history,
                 )
 
-        if result["answer"]:
+        if result.get("answer"):
             message = result["answer"]
-        elif result["context_used"]:
-            # This branch mainly exists when no LLM key is configured.
-            # The curated KB is already written in patient-friendly Arabic.
-            message = self._fallback_context_message(result["context_used"])
+        elif result.get("context_used"):
+            # IMPORTANT: context availability does NOT mean the LLM is unavailable.
+            # The previous message incorrectly told the patient that the LLM was off
+            # whenever the context-to-answer generation call raised an exception.
+            # Keep the user-facing fallback neutral and log the real error server-side.
+            llm_error = result.get("llm_error")
+            if llm_error:
+                print(f"GeneralWellness LLM generation error: {llm_error}")
+            message = self._fallback_context_message(result["context_used"], llm_error=llm_error)
         else:
             message = self._no_source_message(patient_message)
 
@@ -309,10 +314,11 @@ class GeneralWellnessHandler:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _fallback_context_message(context_used: list[str]) -> str:
+    def _fallback_context_message(context_used: list[str], llm_error: str | None = None) -> str:
+        # Do not expose internal API/model errors to the patient.
         return (
-            "لقيت المعلومة دي في المصادر الموثوقة عندي. هعرضهالك زي ما هي لأن "
-            "مفيش LLM شغال حالياً لإعادة صياغتها:\n\n"
+            "لقيت معلومة مرتبطة بسؤالك في المصادر الموثوقة عندي، لكن حصلت مشكلة مؤقتة "
+            "وأنا بصيغها في شكل شرح مبسط. دي المعلومة الأساسية المتاحة عندي حالياً:\n\n"
             + context_used[0][:1600]
         )
 

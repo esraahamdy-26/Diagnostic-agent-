@@ -222,9 +222,25 @@ class KnowledgeBase:
             if self.provider == "gemini":
                 import google.generativeai as genai
                 genai.configure(api_key=self.api_key)
-                model = genai.GenerativeModel(model_name=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
-                                               system_instruction=system_prompt)
-                answer = model.generate_content(query).text.strip()
+                model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+                model = genai.GenerativeModel(
+                    model_name=model_name,
+                    system_instruction=system_prompt,
+                )
+                response = model.generate_content(query)
+                answer = (getattr(response, "text", "") or "").strip()
+                if not answer:
+                    # Some Gemini responses can contain no `.text` when a candidate
+                    # is blocked/empty. Preserve the real diagnostic instead of
+                    # silently pretending that the LLM is unavailable.
+                    candidates = getattr(response, "candidates", None)
+                    finish_reasons = []
+                    if candidates:
+                        finish_reasons = [getattr(c, "finish_reason", None) for c in candidates]
+                    raise RuntimeError(
+                        f"Gemini returned an empty response (model={model_name}, "
+                        f"finish_reasons={finish_reasons})"
+                    )
             else:
                 from openai import OpenAI
                 client = OpenAI(api_key=self.api_key, timeout=20.0)
@@ -233,10 +249,19 @@ class KnowledgeBase:
                     messages=[{"role": "system", "content": system_prompt},
                               {"role": "user", "content": query}],
                 )
-                answer = resp.choices[0].message.content.strip()
+                answer = (resp.choices[0].message.content or "").strip()
+                if not answer:
+                    raise RuntimeError("OpenAI returned an empty response")
         except Exception as e:
-            print(f"KB answer generation failed: {e}")
-            return {"answer": None, "sources": sources, "context_used": [c.text for c in relevant]}
+            import traceback
+            print(f"KB answer generation failed ({self.provider}): {type(e).__name__}: {e}")
+            traceback.print_exc()
+            return {
+                "answer": None,
+                "sources": sources,
+                "context_used": [c.text for c in relevant],
+                "llm_error": f"{type(e).__name__}: {e}",
+            }
 
         return {"answer": answer, "sources": sources, "context_used": [c.text for c in relevant]}
 
